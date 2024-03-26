@@ -4,27 +4,27 @@ function main(thisObj) {
 	var icondir = new File(new File($.fileName).parent).fullName + "/DKToolBar_Icon/";
 
 	var buttonPosition = [
-			[5, 10, 45, 50],//0
-			[50, 10, 90, 50],//1
-			[95, 10, 135, 50],//2
-			[140, 10, 180, 50],//3
-			[185, 10, 225, 50],//4
-			[230, 10, 270, 50],//5
-			[275, 10, 315, 50],//6
-			[320, 10, 360, 50],//7
-			[365, 10, 405, 50],//8
-			[410, 10, 450, 50],//9
-			[455, 10, 495, 50],//10
-			[500, 10, 540, 50],//11
-			[545, 10, 585, 50],//12
-			[590, 10, 630, 50],//13
-			[635, 10, 675, 50],//14
-			[680, 10, 720, 50],//15
-			[725, 10, 765, 50],//16
-			[770, 10, 810, 50],//17
-			[815, 10, 855, 50],//18
-			[860, 10, 900, 50],//19
-			[905, 10, 945, 50],//20
+			[5, 10, 45, 50],
+			[50, 10, 90, 50],
+			[95, 10, 135, 50],
+			[140, 10, 180, 50],
+			[185, 10, 225, 50],
+			[230, 10, 270, 50],
+			[275, 10, 315, 50],
+			[320, 10, 360, 50],
+			[365, 10, 405, 50],
+			[410, 10, 450, 50],
+			[455, 10, 495, 50],
+			[500, 10, 540, 50],
+			[545, 10, 585, 50],
+			[590, 10, 630, 50],
+			[635, 10, 675, 50],
+			[680, 10, 720, 50],
+			[725, 10, 765, 50],
+			[770, 10, 810, 50],
+			[815, 10, 855, 50],
+			[860, 10, 900, 50],
+			[905, 10, 945, 50]
 		];
 
 	buttonindex = 0;
@@ -117,31 +117,38 @@ function main(thisObj) {
 
 
 	solid.onClick = function() {
+		app.beginUndoGroup("DK_AddSolidLayer");
 		activeComp = getActiveComp();
 		selectedLayers = getSelectLayers();
 		object = getCompLayers().addSolid([0, 0, 0], "Solid", activeComp.width, activeComp.height, activeComp.pixelAspect);
 		setObject(object, selectedLayers, false);
+		app.endUndoGroup();
 	}
 
 	adjustment_layer.onClick = function() {
+		app.beginUndoGroup("DK_AddAdjustmentLayer");
 		activeComp = getActiveComp();
 		selectedLayers = getSelectLayers();
 		object = getCompLayers().addSolid([1, 1, 1], "AdjustmentLayer", activeComp.width, activeComp.height, activeComp.pixelAspect);
 		object.adjustmentLayer = true;
 		object.label = 5;
 		setObject(object, selectedLayers, false);
+		app.endUndoGroup();
 	}
 
 	null_object.onClick = function() {
+		app.beginUndoGroup("DK_AddNullObject");
 		activeComp = getActiveComp();
 		selectedLayers = getSelectLayers();
 		object = getCompLayers().addNull();
 		object.label = 2;
 		centerAnchorPoint(object);
 		setObject(object, selectedLayers, true);
+		app.endUndoGroup();
 	}
 
 	camera.onClick = function() {
+		app.beginUndoGroup("DK_AddCamera");
 		activeComp = getActiveComp();
 		selectedLayers = getSelectLayers();
 		object = getCompLayers().addCamera("Camera", [activeComp.width/2 , activeComp.height/2]);
@@ -149,19 +156,20 @@ function main(thisObj) {
 		object.autoOrient = AutoOrientType.ALONG_PATH;
 		object.autoOrient = AutoOrientType.NO_AUTO_ORIENT;
 		setObject(object, selectedLayers, false);
+		app.endUndoGroup();
 	}
 
 	loop_expression.onClick = function() {
+		app.beginUndoGroup("DK_LoopExpression");
 		selectedLayers = getSelectLayers();
 		for (i = 0; i < selectedLayers.length; i++) {
 			selectLayer = selectedLayers[i];
 			selectLayer.timeRemapEnabled = true;
 			selectLayer.property("ADBE Time Remapping").expression = 'loopOut(type="cycle")';
 		}
+		app.endUndoGroup();
 	}
 
 }
 
-app.beginUndoGroup("DKToolBar");
 main(this);
-app.endUndoGroup();
